@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú - Tacos del Sur</title>
+    <style>
+        /* --- Importación de Fuentes --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+        /* --- Variables de Color y Estilos Base --- */
+        :root {
+            --color-primario: #E54D2E; /* Rojo pastor más intenso */
+            --color-secundario: #FFC107; /* Amarillo piña más brillante */
+            --color-fondo-overlay: rgba(18, 18, 18, 0.85); /* Capa oscura para legibilidad */
+            --color-tarjeta: #1E1E1E;
+            --color-texto: #ECECEC;
+            --color-texto-secundario: #B0B0B0;
+            --color-whatsapp: #25D366;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* --- CONFIGURACIÓN DEL FONDO DE IMAGEN --- */
+            background-image: url(https://res.cloudinary.com/dcusstbid/image/upload/v1752207629/a_kzdqmu_c_pad_b_gen_fill_ar_9_16_wkkikd.png); /* <-- URL DE TU IMAGEN */
+            background-size: cover; /* Cubre todo el espacio */
+            background-position: center; /* Centra la imagen */
+            background-attachment: fixed; /* La imagen no se mueve al hacer scroll */
+            background-repeat: no-repeat; /* La imagen no se repite */
+            
+            color: var(--color-texto);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            position: relative; /* Necesario para la capa de superposición */
+        }
+
+        /* Capa oscura sobre la imagen de fondo para mejorar la legibilidad del texto */
+        body::before {
+            content: '';
+            position: fixed; /* Fijo para que cubra toda la pantalla siempre */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--color-fondo-overlay);
+            z-index: -1; /* Se coloca detrás de todo el contenido */
+        }
+
+
+        /* --- Contenedor Principal --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            overflow: hidden;
+        }
+
+        /* --- Títulos de Sección con Efecto de Resplandor --- */
+        .titulo-seccion {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 6vw, 3.5rem);
+            color: var(--color-primario);
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease-out, glow 2s infinite alternate;
+        }
+
+        .subtitulo-seccion {
+            text-align: center;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            color: var(--color-secundario);
+            margin-bottom: 4rem;
+            animation: fadeInDown 1s ease-out 0.2s;
+        }
+
+        /* --- Estructura del Menú por Categorías --- */
+        .categoria-menu {
+            margin-bottom: 5rem;
+        }
+
+        .categoria-titulo {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            color: var(--color-texto);
+            border-bottom: 3px solid var(--color-primario);
+            padding-bottom: 0.75rem;
+            margin-bottom: 3rem;
+            text-align: left;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 2.5rem;
+        }
+
+        /* --- Tarjeta de Platillo con Animación Mejorada --- */
+        .menu-item {
+            background: linear-gradient(145deg, #2a2a2a, #1c1c1c);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(50px) scale(0.95); /* Posición inicial para la animación */
+            --delay: 0s; /* Variable para la animación escalonada */
+        }
+
+        .menu-item:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 0 25px -5px var(--color-secundario), 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .menu-item.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition-delay: var(--delay); /* Aplicar el retraso de la animación */
+        }
+
+        .menu-item-img-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .menu-item-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+
+        .menu-item:hover .menu-item-img {
+            transform: scale(1.1);
+            filter: saturate(120%);
+        }
+
+        .menu-item-contenido {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--color-secundario);
+            margin-bottom: 0.75rem;
+        }
+
+        .menu-item-descripcion {
+            font-size: 0.95rem;
+            color: var(--color-texto-secundario);
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item-precios {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--color-texto);
+            margin-bottom: 1rem;
+        }
+
+        .menu-item-precio-final {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-secundario);
+            text-align: right;
+            margin-top: auto;
+        }
+        
+        .menu-item-nota {
+            font-size: 0.85rem;
+            color: var(--color-primario);
+            text-align: left;
+            margin-top: 1rem;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        /* --- Botón Flotante de WhatsApp --- */
+        .whatsapp-flotante {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: var(--color-whatsapp);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .whatsapp-flotante:hover {
+            transform: scale(1.05);
+            background-color: #128C7E; /* Tono más oscuro de WhatsApp */
+            animation-play-state: paused; /* Pausa la animación al pasar el mouse */
+        }
+
+        .whatsapp-flotante svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        /* --- Animaciones --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #D9411E, 0 0 10px #D9411E; }
+            to { text-shadow: 0 0 15px #D9411E, 0 0 25px #D9411E; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            .whatsapp-flotante span {
+                display: none; /* Oculta el texto en pantallas pequeñas */
+            }
+            .whatsapp-flotante {
+                padding: 15px; /* Hace el botón circular */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<main id="menu" class="container">
+    <header>
+        <h1 class="titulo-seccion">Nuestro Menú</h1>
+        <p class="subtitulo-seccion">Más que tacos, una tradición familiar de corazón.</p>
+    </header>
+
+    <!-- ========= SECCIÓN DE TACOS ========= -->
+    <section class="categoria-menu">
+        <h2 class="categoria-titulo">Para Taquear</h2>
+        <div class="items-grid">
+            <!-- Taco al Pastor -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/D9411E/FFFFFF?text=Taco+al+Pastor" alt="Imagen de Tacos al Pastor" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Taco al Pastor</h3>
+                    <p class="menu-item-descripcion">El clásico de la casa. Carne de cerdo marinada en nuestra receta secreta de achiote y especias, cocinada en trompo vertical.</p>
+                    <p class="menu-item-precio-final">$15</p>
+                    <p class="menu-item-nota">Pídelo con queso por +$10</p>
+                </div>
+            </article>
+            <!-- Taco de Bistec -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/5C3D2E/FFFFFF?text=Taco+de+Bistec" alt="Imagen de Taco de Bistec" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Taco de Bistec</h3>
+                    <p class="menu-item-descripcion">Suave bistec de res asado a la plancha, finamente picado. Un favorito que no puede faltar.</p>
+                    <p class="menu-item-precio-final">$25</p>
+                    <p class="menu-item-nota">Pídelo con queso por +$10</p>
+                </div>
+            </article>
+            <!-- Taco de Chuleta -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/A0522D/FFFFFF?text=Taco+de+Chuleta" alt="Imagen de Taco de Chuleta" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Taco de Chuleta</h3>
+                    <p class="menu-item-descripcion">Chuleta de cerdo ahumada, asada y picada. Un sabor intenso y delicioso en cada mordida.</p>
+                    <p class="menu-item-precio-final">$15</p>
+                    <p class="menu-item-nota">Pídelo con queso por +$10</p>
+                </div>
+            </article>
+            <!-- Taco de Arrachera -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/8B4513/FFFFFF?text=Taco+Arrachera" alt="Imagen de Taco de Arrachera" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Taco de Arrachera</h3>
+                    <p class="menu-item-descripcion">La joya de la parrilla. Arrachera de res calidad premium, marinada y con una suavidad inigualable.</p>
+                    <p class="menu-item-precio-final">$50</p>
+                    <p class="menu-item-nota">Pídelo con queso por +$10</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- ========= SECCIÓN DE ESPECIALIDADES (Suizos, Alambres, Costras) ========= -->
+    <section class="categoria-menu">
+        <h2 class="categoria-titulo">Especialidades de la Casa</h2>
+        <div class="items-grid">
+            <!-- Suizo -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/F2A922/000000?text=Suizo" alt="Imagen de Suizo" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Suizos</h3>
+                    <p class="menu-item-descripcion">Tu carne favorita envuelta en tortilla de harina y una generosa capa de queso manchego derretido.</p>
+                    <div class="menu-item-precios">
+                        Pastor o Chuleta: <strong>$35</strong><br>
+                        Bistec: <strong>$50</strong><br>
+                        Arrachera: <strong>$80</strong>
+                    </div>
+                </div>
+            </article>
+            <!-- Alambre -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/228B22/FFFFFF?text=Alambre" alt="Imagen de Alambre" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Alambre</h3>
+                    <p class="menu-item-descripcion">Deliciosa mezcla de pimiento morrón, cebolla, tocino y queso derretido con la carne de tu elección. Se sirve con tortillas.</p>
+                    <div class="menu-item-precios">
+                        Pastor o Chuleta: <strong>$150</strong><br>
+                        Bistec: <strong>$200</strong>
+                    </div>
+                </div>
+            </article>
+            <!-- Costra -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/CD853F/000000?text=Costra" alt="Imagen de Costra de Queso" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Costras</h3>
+                    <p class="menu-item-descripcion">La tortilla es de queso. Crujiente chicharrón de queso a la plancha relleno con tu carne preferida.</p>
+                    <div class="menu-item-precios">
+                        Pastor o Chuleta: <strong>$30</strong><br>
+                        Bistec: <strong>$45</strong><br>
+                        Arrachera: <strong>$70</strong>
+                    </div>
+                </div>
+            </article>
+            <!-- Volcanes -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/FFC300/000000?text=Volcán" alt="Imagen de un Volcán" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Volcanes</h3>
+                    <p class="menu-item-descripcion">Una crujiente tostada de maíz con queso derretido y la carne de tu elección. ¡Una explosión de sabor!</p>
+                    <div class="menu-item-precios">
+                        Pastor o Chuleta: <strong>$25</strong><br>
+                        Bistec: <strong>$35</strong><br>
+                        Arrachera: <strong>$60</strong>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+    
+    <!-- ========= SECCIÓN DE GRINGAS Y TORTAS ========= -->
+    <section class="categoria-menu">
+        <h2 class="categoria-titulo">Más Antojos</h2>
+        <div class="items-grid">
+            <!-- Gringas -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/E67E22/FFFFFF?text=Gringa" alt="Imagen de Gringa" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Gringas</h3>
+                    <p class="menu-item-descripcion">Dos tortillas de harina con queso derretido y tu carne favorita en medio. ¡Un clásico irresistible!</p>
+                     <div class="menu-item-precios">
+                        Pastor o Chuleta: <strong>$75</strong><br>
+                        Bistec: <strong>$90</strong><br>
+                        Arrachera: <strong>$160</strong>
+                    </div>
+                </div>
+            </article>
+            <!-- Tortas -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/C39C6E/000000?text=Torta" alt="Imagen de Torta" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Tortas</h3>
+                    <p class="menu-item-descripcion">Pan telera calientito, con frijoles, mayonesa, queso, aguacate, jitomate, cebolla y tu carne preferida.</p>
+                    <div class="menu-item-precios">
+                        Pastor o Chuleta: <strong>$75</strong><br>
+                        Bistec: <strong>$90</strong><br>
+                        Arrachera: <strong>$160</strong>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- ========= SECCIÓN DE BEBIDAS ========= -->
+    <section class="categoria-menu">
+        <h2 class="categoria-titulo">Para Beber</h2>
+        <div class="items-grid">
+            <!-- Refrescos -->
+            <article class="menu-item">
+                <div class="menu-item-img-container">
+                    <img src="https://placehold.co/600x400/3498DB/FFFFFF?text=Refrescos" alt="Imagen de Refrescos" class="menu-item-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/FFFFFF?text=Imagen+no+disponible';">
+                </div>
+                <div class="menu-item-contenido">
+                    <h3 class="menu-item-titulo">Refrescos</h3>
+                    <p class="menu-item-descripcion">Pepsi, 7 Up (Steven Up), Sangría, Manzanita, Boing de Mango y Boing de Guayaba.</p>
+                    <p class="menu-item-precio-final">$25</p>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<!-- ========= BOTÓN FLOTANTE DE WHATSAPP ========= -->
+<a href="https://wa.me/5217227618491" class="whatsapp-flotante" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 32 32"><path d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.044-.53-.044-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.32.29-.715.29-1.318.21-1.38a.602.602 0 0 0-.25-.315l-1.922-.945z" fill-rule="evenodd"></path></svg>
+    <span>Pedir a Domicilio</span>
+</a>
+
+
+<script>
+    // --- LÓGICA PARA LA ANIMACIÓN ESCALONADA AL DESPLAZARSE (SCROLL) ---
+    // Este script hace que los elementos aparezcan uno tras otro suavemente.
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Deja de observar el elemento una vez que es visible para que la animación no se repita.
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        rootMargin: '0px',
+        threshold: 0.1 // El elemento se considera visible cuando el 10% de él está en pantalla
+    });
+
+    // Seleccionamos todas las grillas de items
+    document.querySelectorAll('.items-grid').forEach(grid => {
+        const items = grid.querySelectorAll('.menu-item');
+        items.forEach((item, index) => {
+            // Asigna un retraso de animación a cada item de la grilla
+            item.style.setProperty('--delay', `${index * 120}ms`);
+            observer.observe(item);
+        });
+    });
+
+</script>
+
+</body>
+</html>
